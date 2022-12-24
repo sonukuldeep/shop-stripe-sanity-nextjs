@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DataContext from "./DataContext";
+import { toast } from 'react-hot-toast';
 
 const DataState = props => {
     // const cart = { '_id': '', 'price': 0, 'quantity': 0 }
@@ -12,20 +13,26 @@ const DataState = props => {
 
 
     const onAdd = (product, newQuantity) => {
+        let triggerToast = false
         const { _id, price, } = product
-        const matchedID = cartItems.indexOf(item=>{
-            return item._id == _id
-        })
-        if(matchedID === -1) {
-
+        const matchedID = cartItems.findIndex(item => item._id === product._id)
+        if (matchedID === -1) {
+            triggerToast = true
             const updateCart = [...cartItems, { _id, price, quantity: newQuantity, name: product.name, image: product.image }]
             setCartItems(updateCart)
         }
         else {
+            cartItems[matchedID].quantity + newQuantity > cartItems[matchedID].quantity ? triggerToast = true : triggerToast = false
             const updateCart = [...cartItems]
-            updateCart[matchedID] = { _id, price, quantity: newQuantity, name: product.name, image: product.image }
+            const updateQuantity = updateCart[matchedID].quantity + newQuantity
+            updateCart[matchedID] = { _id, price, quantity: updateQuantity, name: product.name, image: product.image }
             setCartItems(updateCart)
+
         }
+
+        if (triggerToast)
+            toast.success(`${qty} ${product.name} added to the cart.`);
+
     }
 
     useEffect(() => {
@@ -37,7 +44,19 @@ const DataState = props => {
         }, 0)
         setTotalPrice(total_price)
         setTotalQuantities(total_quantity)
+
+        if (cartItems.length > 0)
+            localStorage.setItem('cart', JSON.stringify(cartItems))
     }, [cartItems])
+
+    useEffect(() => {
+        let localStorageData = localStorage.getItem('cart')
+        if (localStorageData === null)
+            return
+        else {
+            setCartItems(JSON.parse(localStorageData))
+        }
+    }, [])
 
     const onRemove = (product) => {
         const updateCart = cartItems.filter((item) => (item._id !== product._id))
@@ -46,10 +65,10 @@ const DataState = props => {
 
     const toggleCartItemQuanitity = (product, value) => {
         if (value === 'inc') {
-            onAdd(product, Number(product.quantity) + 1)
+            onAdd(product, 1)
         }
-        else {
-            onAdd(product, Number(product.quantity) - 1)
+        else if (value === 'dec' && product.quantity > 1) {
+            onAdd(product, - 1)
         }
     }
 
