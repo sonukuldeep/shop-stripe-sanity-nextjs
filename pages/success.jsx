@@ -9,10 +9,10 @@ const Success = () => {
   const { setCartItems, setTotalPrice, setTotalQuantities } = useContext(DataContext)
   
   useEffect(() => {
-    localStorage.clear();
+    // localStorage.setItem('cart',[]);
     setCartItems([]);
-    setTotalPrice(0);
-    setTotalQuantities(0);
+    // setTotalPrice(0);
+    // setTotalQuantities(0);
     runFireworks();
   }, []);
 

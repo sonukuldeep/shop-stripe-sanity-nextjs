@@ -5,12 +5,22 @@ import { toast } from 'react-hot-toast';
 const DataState = props => {
     // const cart = { '_id': '', 'price': 0, 'quantity': 0 }
     const [showCart, setShowCart] = useState(false);
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState(getCart);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalQuantities, setTotalQuantities] = useState(0);
     const [qty, setQty] = useState(1);
 
-
+    function getCart() {
+        if (typeof window !== 'undefined') {
+            const item = localStorage.getItem('cart')
+            if(item === null)
+                return []
+            else {
+                return JSON.parse(localStorage.getItem('cart'))
+            }
+          }
+          
+    }
 
     const onAdd = (product, newQuantity) => {
         let triggerToast = false
@@ -45,18 +55,18 @@ const DataState = props => {
         setTotalPrice(total_price)
         setTotalQuantities(total_quantity)
 
-        if (cartItems.length > 0)
+        // if (cartItems.length > 0)
             localStorage.setItem('cart', JSON.stringify(cartItems))
     }, [cartItems])
 
-    useEffect(() => {
-        let localStorageData = localStorage.getItem('cart')
-        if (localStorageData === null)
-            return
-        else {
-            setCartItems(JSON.parse(localStorageData))
-        }
-    }, [])
+    // useEffect(() => {
+    //     let localStorageData = localStorage.getItem('cart')
+    //     if (localStorageData === null)
+    //         return
+    //     else {
+    //         setCartItems(JSON.parse(localStorageData))
+    //     }
+    // }, [])
 
     const onRemove = (product) => {
         const updateCart = cartItems.filter((item) => (item._id !== product._id))
