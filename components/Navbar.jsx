@@ -1,12 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Link from 'next/link';
 import { AiOutlineShopping } from 'react-icons/ai'
-
+import DataContext from '../context/DataContext';
 import { Cart } from './';
-import { useStateContext} from '../context/StateContext';
 
 const Navbar = () => {
-  const { showCart, setShowCart, totalQuantities } = useStateContext();
+  const { showCart, setShowCart, totalQuantities } = useContext(DataContext)
 
   return (
     <div className="navbar-container">

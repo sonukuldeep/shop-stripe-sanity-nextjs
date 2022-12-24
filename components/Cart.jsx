@@ -1,17 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef,useContext,useEffect } from 'react';
 import Link from 'next/link';
 import { AiOutlineMinus, AiOutlinePlus, AiOutlineLeft, AiOutlineShopping } from 'react-icons/ai';
 import { TiDeleteOutline } from 'react-icons/ti';
 import toast from 'react-hot-toast';
-
+import DataContext from '../context/DataContext';
 import { useStateContext } from '../context/StateContext';
 import { urlFor } from '../lib/client';
 import getStripe from '../lib/getStripe';
 
 const Cart = () => {
   const cartRef = useRef();
-  const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuanitity, onRemove } = useStateContext();
-
+  // const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuanitity, onRemove } = useStateContext();
+  const { setShowCart, cartItems, totalPrice, totalQuantities, onRemove, toggleCartItemQuanitity} = useContext(DataContext)
+  
+  
   const handleCheckout = async () => {
     const stripe = await getStripe();
 
@@ -72,11 +74,11 @@ const Cart = () => {
                 <div className="flex bottom">
                   <div>
                   <p className="quantity-desc">
-                    <span className="minus" onClick={() => toggleCartItemQuanitity(item._id, 'dec') }>
+                    <span className="minus" onClick={() => toggleCartItemQuanitity(item, 'dec') }>
                     <AiOutlineMinus />
                     </span>
-                    <span className="num" onClick="">{item.quantity}</span>
-                    <span className="plus" onClick={() => toggleCartItemQuanitity(item._id, 'inc') }><AiOutlinePlus /></span>
+                    <span className="num">{item.quantity}</span>
+                    <span className="plus" onClick={() => toggleCartItemQuanitity(item, 'inc') }><AiOutlinePlus /></span>
                   </p>
                   </div>
                   <button
